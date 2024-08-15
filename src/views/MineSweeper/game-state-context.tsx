@@ -3,7 +3,7 @@ import type { GameConditions } from "./types";
 
 type GameState = {
   timer: React.MutableRefObject<number>;
-  rightFlags: React.MutableRefObject<number>;
+  setHiddenCells: React.Dispatch<React.SetStateAction<number>>;
   gameCondition: GameConditions;
   setGameCondition: React.Dispatch<React.SetStateAction<GameConditions>>;
   setRemainingBombs: React.Dispatch<React.SetStateAction<number>>;
