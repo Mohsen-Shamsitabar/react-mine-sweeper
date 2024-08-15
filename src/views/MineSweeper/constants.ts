@@ -4,6 +4,6 @@ export const CONTAINER_BORDER_COLOR_DARK = "#1e262f";
 
 export const CONTAINER_BORDER_SIZE = 8;
 
-export const ROWS = 10;
-export const COLUMNS = 10;
-export const BOMBS = 1;
+export const ROWS = 9;
+export const COLUMNS = 9;
+export const BOMBS = 10;

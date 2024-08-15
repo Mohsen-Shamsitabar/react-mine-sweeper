@@ -50,6 +50,20 @@ const Board = () => {
     [],
   );
 
+  const getHiddenCells = React.useCallback((cells: CellProps[][]) => {
+    let result = 0;
+
+    for (let row = 0; row < ROWS; row++) {
+      for (let col = 0; col < COLUMNS; col++) {
+        const cellData = cells[row]![col]!;
+
+        result = cellData.isVisible ? result : result + 1;
+      }
+    }
+
+    return result;
+  }, []);
+
   const [cells, setCells] = React.useState<CellProps[][]>(() => {
     const cells: CellProps[][] = [];
 
@@ -136,7 +150,12 @@ const Board = () => {
   const handleCellLeftClick = React.useCallback(
     (row: number, col: number) => {
       if (!gameState) return;
-      const { gameCondition, setGameCondition, setRemainingBombs } = gameState;
+      const {
+        gameCondition,
+        setGameCondition,
+        setRemainingBombs,
+        setHiddenCells,
+      } = gameState;
       if (gameCondition !== "running") return;
 
       const clickedCell = cells[row]![col]!;
@@ -152,12 +171,14 @@ const Board = () => {
 
       if (clickedCell.value > 0) {
         setCells(newCells);
+        setHiddenCells(getHiddenCells(newCells));
         return;
       }
 
       if (clickedCell.value === -1) {
         setGameCondition("lose");
         setCells(newCells);
+        setHiddenCells(getHiddenCells(newCells));
         return;
       }
 
@@ -168,14 +189,15 @@ const Board = () => {
       );
 
       setCells(newCells);
+      setHiddenCells(getHiddenCells(newCells));
     },
-    [cells, gameState, getCellNeighbors, handleNeighbors],
+    [cells, gameState, getCellNeighbors, getHiddenCells, handleNeighbors],
   );
 
   const handleCellRightClick = React.useCallback(
     (row: number, col: number) => {
       if (!gameState) return;
-      const { gameCondition, setRemainingBombs, rightFlags } = gameState;
+      const { gameCondition, setRemainingBombs } = gameState;
       if (gameCondition !== "running") return;
 
       const clickedCell = cells[row]![col]!;
@@ -183,7 +205,6 @@ const Board = () => {
       const newCells: CellProps[][] = deepCopy(cells);
 
       const isCellFlagged = clickedCell.isFlagged;
-      const cellValue = clickedCell.value;
 
       if (isCellFlagged) {
         newCells[row]![col]!.isFlagged = false;
@@ -191,10 +212,6 @@ const Board = () => {
       } else {
         newCells[row]![col]!.isFlagged = true;
         setRemainingBombs(current => current - 1);
-      }
-
-      if (cellValue === -1) {
-        rightFlags.current++;
       }
 
       setCells(newCells);

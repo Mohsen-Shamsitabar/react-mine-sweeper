@@ -1,7 +1,7 @@
 import { Stack } from "@mui/material";
 import * as React from "react";
 import { Board, Header } from "./components";
-import { BOMBS } from "./constants";
+import { BOMBS, COLUMNS, ROWS } from "./constants";
 import { GameStateProvider } from "./game-state-context";
 import * as sx from "./styles";
 import { type GameConditions } from "./types";
@@ -10,7 +10,7 @@ const MineSweeper = () => {
   const rootRef = React.useRef<HTMLDivElement | null>(null);
 
   const timerRef = React.useRef(0);
-  const rightFlagsRef = React.useRef(0);
+  const [hiddenCells, setHiddenCells] = React.useState<number>(ROWS * COLUMNS);
   const [gameCondition, setGameCondition] =
     React.useState<GameConditions>("running");
 
@@ -18,7 +18,7 @@ const MineSweeper = () => {
   const [resetCount, setResetCount] = React.useState<number>(0);
   const resetStates = React.useCallback(() => {
     timerRef.current = 0;
-    rightFlagsRef.current = 0;
+    setHiddenCells(ROWS * COLUMNS);
     setGameCondition("running");
     setRemainingBombs(BOMBS);
 
@@ -28,10 +28,10 @@ const MineSweeper = () => {
   const checkGameCondition = React.useCallback(() => {
     if (gameCondition !== "running") return;
 
-    if (rightFlagsRef.current === BOMBS && remainingBombs === 0) {
+    if (hiddenCells === BOMBS && remainingBombs === 0) {
       setGameCondition("win");
     }
-  }, [gameCondition, remainingBombs]);
+  }, [gameCondition, hiddenCells, remainingBombs]);
 
   checkGameCondition();
 
@@ -53,13 +53,13 @@ const MineSweeper = () => {
       <GameStateProvider
         gameState={{
           timer: timerRef,
-          gameCondition,
-          setGameCondition,
-          remainingBombs,
-          setRemainingBombs,
-          resetStates,
           resetCount,
-          rightFlags: rightFlagsRef,
+          gameCondition,
+          remainingBombs,
+          setGameCondition,
+          setRemainingBombs,
+          setHiddenCells,
+          resetStates,
         }}
       >
         <Stack key={resetCount} ref={rootRef} sx={sx.root} direction="column">
