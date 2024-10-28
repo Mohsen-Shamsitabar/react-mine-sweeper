@@ -3,9 +3,12 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://mohsen-shamsitabar.github.io/react-mine-sweeper",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "predeploy": "yarn build",
+    "deploy": "gh-pages -d build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --config .eslintrc --max-warnings 0",
     "preview": "vite preview"
   },
@@ -32,6 +35,7 @@
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.9",
+    "gh-pages": "^6.2.0",
     "globals": "^15.9.0",
     "prettier": "^3.0.0",
     "typescript": "^5.0.2",
